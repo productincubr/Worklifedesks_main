@@ -104,14 +104,31 @@ export default function App() {
       }
     }
     
+    // Add specific predefined users
+    const predefinedUsers = [
+      { email: 'aashviaanand17@gmail.com', firstName: 'Aashvi', lastName: 'Aanand' },
+      { email: 'Arpitmishra272728@gmail.com', firstName: 'Arpit', lastName: 'Mishra' },
+      { email: 'Kikokhushi582@gmail.com', firstName: 'Khushi', lastName: '' }
+    ];
+    const predefined = predefinedUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+
     // Demo: allow any login
-    const demoUser: User = {
-      firstName: 'User',
+    const demoUser: User = predefined ? {
+      firstName: predefined.firstName,
+      lastName: predefined.lastName,
+      email: predefined.email
+    } : {
+      firstName: email.split('@')[0],
       lastName: '',
       email: email
     };
+    
+    // Always persist in localStorage to keep login state active on refresh if needed
+    // or respect rememberMe if we only want to keep profile data
     if (rememberMe) {
       localStorage.setItem('currentUser', JSON.stringify(demoUser));
+    } else {
+      localStorage.setItem('currentUser', JSON.stringify(demoUser)); // Keeping it default so refresh works, or session storage can be used
     }
     setCurrentUser(demoUser);
     setAuthState('authenticated');
@@ -200,47 +217,55 @@ export default function App() {
     isActive: false
   };
 
-  // Load from localStorage on mount
+  // Load from localStorage on mount and when currentUser changes
   useEffect(() => {
-    const savedMonthlyGoals = localStorage.getItem('monthlyGoals');
-    const savedWeeklyGoals = localStorage.getItem('weeklyGoals');
-    const savedDailyTasks = localStorage.getItem('dailyTasks');
+    if (!currentUser) return; // wait until user is set
+
+    const savedMonthlyGoals = localStorage.getItem(`monthlyGoals_${currentUser.email}`);
+    const savedWeeklyGoals = localStorage.getItem(`weeklyGoals_${currentUser.email}`);
+    const savedDailyTasks = localStorage.getItem(`dailyTasks_${currentUser.email}`);
 
     // Load saved data or use templates if no data exists
     if (savedMonthlyGoals) {
       const parsed = JSON.parse(savedMonthlyGoals);
-      setMonthlyGoals(parsed.length > 0 ? parsed : [templateMonthlyGoal, templateMonthlyGoal2]);
+      setMonthlyGoals(parsed);
     } else {
       setMonthlyGoals([templateMonthlyGoal, templateMonthlyGoal2]);
     }
 
     if (savedWeeklyGoals) {
       const parsed = JSON.parse(savedWeeklyGoals);
-      setWeeklyGoals(parsed.length > 0 ? parsed : [templateWeeklyGoal, templateWeeklyGoal2]);
+      setWeeklyGoals(parsed);
     } else {
       setWeeklyGoals([templateWeeklyGoal, templateWeeklyGoal2]);
     }
 
     if (savedDailyTasks) {
       const parsed = JSON.parse(savedDailyTasks);
-      setDailyTasks(parsed.length > 0 ? parsed : [templateDailyTask, templateDailyTask2]);
+      setDailyTasks(parsed);
     } else {
       setDailyTasks([templateDailyTask, templateDailyTask2]);
     }
-  }, []);
+  }, [currentUser]);
 
   // Save to localStorage whenever data changes
   useEffect(() => {
-    localStorage.setItem('monthlyGoals', JSON.stringify(monthlyGoals));
-  }, [monthlyGoals]);
+    if (currentUser) {
+      localStorage.setItem(`monthlyGoals_${currentUser.email}`, JSON.stringify(monthlyGoals));
+    }
+  }, [monthlyGoals, currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('weeklyGoals', JSON.stringify(weeklyGoals));
-  }, [weeklyGoals]);
+    if (currentUser) {
+      localStorage.setItem(`weeklyGoals_${currentUser.email}`, JSON.stringify(weeklyGoals));
+    }
+  }, [weeklyGoals, currentUser]);
 
   useEffect(() => {
-    localStorage.setItem('dailyTasks', JSON.stringify(dailyTasks));
-  }, [dailyTasks]);
+    if (currentUser) {
+      localStorage.setItem(`dailyTasks_${currentUser.email}`, JSON.stringify(dailyTasks));
+    }
+  }, [dailyTasks, currentUser]);
 
   const handleAddMonthlyGoal = (goal: Omit<MonthlyGoal, 'id'>) => {
     const newGoal: MonthlyGoal = {
@@ -591,21 +616,21 @@ ${dailyTasks.filter(t => t.status === 'To Do').map(task => `
 // Demo employees for when no employees are saved
 function generateDemoEmployees(): Employee[] {
   return [
-    { id: '1', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
-    { id: '2', name: 'Bhavika Bhalla', title: 'UI/UX Designer', phoneNumber: '555-0102', email: 'bhavika@example.com' },
-    { id: '3', name: 'Bhawna Kela', title: 'Project Manager', phoneNumber: '555-0103', email: 'bhawna@example.com' },
-    { id: '4', name: 'Rahul Singh', title: 'Data Analyst', phoneNumber: '555-0104', email: 'rahul@example.com' },
-    { id: '5', name: 'ACBD Employee', title: 'Associate', phoneNumber: '555-0105', email: 'acbd@example.com' },
-    { id: '6', name: 'Priya Sharma', title: 'Frontend Developer', phoneNumber: '555-0106', email: 'priya@example.com' },
-    { id: '7', name: 'Amit Kumar', title: 'Graphic Designer', phoneNumber: '555-0107', email: 'amit@example.com' },
-    { id: '8', name: 'Neha Gupta', title: 'Team Lead', phoneNumber: '555-0108', email: 'neha@example.com' },
-    { id: '9', name: 'Vikram Patel', title: 'Backend Developer', phoneNumber: '555-0109', email: 'vikram@example.com' },
-    { id: '10', name: 'Ananya Reddy', title: 'Product Manager', phoneNumber: '555-0110', email: 'ananya@example.com' },
-    { id: '11', name: 'Sanjay Verma', title: 'QA Engineer', phoneNumber: '555-0111', email: 'sanjay@example.com' },
-    { id: '12', name: 'Meera Joshi', title: 'HR Manager', phoneNumber: '555-0112', email: 'meera@example.com' },
-    { id: '13', name: 'Arjun Nair', title: 'DevOps Engineer', phoneNumber: '555-0113', email: 'arjun@example.com' },
-    { id: '14', name: 'Kavita Rao', title: 'Marketing Lead', phoneNumber: '555-0114', email: 'kavita@example.com' },
-    { id: '15', name: 'Deepak Mishra', title: 'Sales Executive', phoneNumber: '555-0115', email: 'deepak@example.com' },
-    { id: '16', name: 'Shreya Kapoor', title: 'Content Writer', phoneNumber: '555-0116', email: 'shreya@example.com' },
+    { id: '1', name: 'Aashvi Aanand', title: 'Team Member', phoneNumber: '', email: 'aashviaanand17@gmail.com' },
+    { id: '2', name: 'Arpit Mishra', title: 'Team Member', phoneNumber: '', email: 'Arpitmishra272728@gmail.com' },
+    { id: '3', name: 'Khushi', title: 'Team Member', phoneNumber: '', email: 'Kikokhushi582@gmail.com' },
+    { id: '4', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
+    { id: '5', name: 'Bhavika Bhalla', title: 'UI/UX Designer', phoneNumber: '555-0102', email: 'bhavika@example.com' },
+    { id: '6', name: 'Bhawna Kela', title: 'Project Manager', phoneNumber: '555-0103', email: 'bhawna@example.com' },
+    { id: '7', name: 'Rahul Singh', title: 'Data Analyst', phoneNumber: '555-0104', email: 'rahul@example.com' },
+    { id: '8', name: 'ACBD Employee', title: 'Associate', phoneNumber: '555-0105', email: 'acbd@example.com' },
+    { id: '9', name: 'Priya Sharma', title: 'Frontend Developer', phoneNumber: '555-0106', email: 'priya@example.com' },
+    { id: '10', name: 'Amit Kumar', title: 'Graphic Designer', phoneNumber: '555-0107', email: 'amit@example.com' },
+    { id: '11', name: 'Neha Gupta', title: 'Team Lead', phoneNumber: '555-0108', email: 'neha@example.com' },
+    { id: '12', name: 'Vikram Patel', title: 'Backend Developer', phoneNumber: '555-0109', email: 'vikram@example.com' },
+    { id: '13', name: 'Ananya Reddy', title: 'Product Manager', phoneNumber: '555-0110', email: 'ananya@example.com' },
+    { id: '14', name: 'Sanjay Verma', title: 'QA Engineer', phoneNumber: '555-0111', email: 'sanjay@example.com' },
+    { id: '15', name: 'Meera Joshi', title: 'HR Manager', phoneNumber: '555-0112', email: 'meera@example.com' },
+    { id: '16', name: 'Arjun Nair', title: 'DevOps Engineer', phoneNumber: '555-0113', email: 'arjun@example.com' },
   ];
 }
