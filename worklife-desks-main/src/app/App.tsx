@@ -6,9 +6,8 @@ import DailyTasks, { DailyTask } from '@/app/components/DailyTasks';
 import Dashboard from '@/app/components/Dashboard';
 import ProfilePage from '@/app/components/ProfilePage';
 import { SignupPage, LoginPage, CompanyInfoPage, EmployeeInfoPage, SignupData, CompanyData, Employee } from '@/app/components/auth';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/app/components/ui/tabs';
 import { Button } from '@/app/components/ui/button';
-import { Target, CheckSquare, Download, LogOut, Home } from 'lucide-react';
+import { Download, LogOut, Home } from 'lucide-react';
 import { toast } from 'sonner';
 import { Toaster } from '@/app/components/ui/sonner';
 
@@ -32,7 +31,6 @@ export default function App() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
-  const [activeTab, setActiveTab] = useState<'goals' | 'tasks'>('goals');
   const [monthlyGoals, setMonthlyGoals] = useState<MonthlyGoal[]>([]);
   const [weeklyGoals, setWeeklyGoals] = useState<WeeklyGoal[]>([]);
   const [dailyTasks, setDailyTasks] = useState<DailyTask[]>([]);
@@ -484,8 +482,14 @@ ${dailyTasks.filter(t => t.status === 'To Do').map(task => `
         <Dashboard
           employees={employees.length > 0 ? employees : generateDemoEmployees()}
           isLoading={isLoading}
-          onNavigateToGoals={() => { setAppView('workspace'); setActiveTab('goals'); }}
-          onNavigateToTasks={() => { setAppView('workspace'); setActiveTab('tasks'); }}
+          onNavigateToGoals={() => { 
+            setAppView('workspace'); 
+            setTimeout(() => window.scrollTo({ top: 0, behavior: 'smooth' }), 100);
+          }}
+          onNavigateToTasks={() => { 
+            setAppView('workspace'); 
+            setTimeout(() => document.getElementById('tasks-section')?.scrollIntoView({ behavior: 'smooth' }), 100);
+          }}
           onLogout={handleLogout}
           onProfileClick={() => setAppView('profile')}
         />
@@ -569,45 +573,30 @@ ${dailyTasks.filter(t => t.status === 'To Do').map(task => `
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-8 pt-6">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-          <TabsList className="grid w-full max-w-xs grid-cols-2 mb-6 bg-gray-100 p-1">
-            <TabsTrigger value="goals" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
-              <Target className="w-5 h-5" />
-              Goals
-            </TabsTrigger>
-            <TabsTrigger value="tasks" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
-              <CheckSquare className="w-5 h-5" />
-              Tasks
-            </TabsTrigger>
-          </TabsList>
+      <div className="max-w-7xl mx-auto px-8 pt-6 pb-20">
+        <Goals
+          monthlyGoals={monthlyGoals}
+          weeklyGoals={weeklyGoals}
+          onAddMonthlyGoal={handleAddMonthlyGoal}
+          onUpdateMonthlyGoal={handleUpdateMonthlyGoal}
+          onDeleteMonthlyGoal={handleDeleteMonthlyGoal}
+          onAddWeeklyGoal={handleAddWeeklyGoal}
+          onUpdateWeeklyGoal={handleUpdateWeeklyGoal}
+          onDeleteWeeklyGoal={handleDeleteWeeklyGoal}
+        />
 
-          <TabsContent value="goals" className="mt-0">
-            <Goals
-              monthlyGoals={monthlyGoals}
-              weeklyGoals={weeklyGoals}
-              onAddMonthlyGoal={handleAddMonthlyGoal}
-              onUpdateMonthlyGoal={handleUpdateMonthlyGoal}
-              onDeleteMonthlyGoal={handleDeleteMonthlyGoal}
-              onAddWeeklyGoal={handleAddWeeklyGoal}
-              onUpdateWeeklyGoal={handleUpdateWeeklyGoal}
-              onDeleteWeeklyGoal={handleDeleteWeeklyGoal}
-            />
-          </TabsContent>
-
-          <TabsContent value="tasks" className="mt-0">
-            <DailyTasks
-              tasks={dailyTasks}
-              weeklyGoals={weeklyGoals}
-              onAddTask={handleAddTask}
-              onToggleTask={handleToggleTask}
-              onUpdateTaskStatus={handleUpdateTaskStatus}
-              onStartStopTask={handleStartStopTask}
-              onDeleteTask={handleDeleteTask}
-              onUpdateTask={handleUpdateTask}
-            />
-          </TabsContent>
-        </Tabs>
+        <div id="tasks-section" className="mt-16 pt-8 border-t-2 border-gray-200">
+          <DailyTasks
+            tasks={dailyTasks}
+            weeklyGoals={weeklyGoals}
+            onAddTask={handleAddTask}
+            onToggleTask={handleToggleTask}
+            onUpdateTaskStatus={handleUpdateTaskStatus}
+            onStartStopTask={handleStartStopTask}
+            onDeleteTask={handleDeleteTask}
+            onUpdateTask={handleUpdateTask}
+          />
+        </div>
       </div>
     </div>
   );
@@ -619,11 +608,11 @@ function generateDemoEmployees(): Employee[] {
     { id: '1', name: 'Aashvi Aanand', title: 'Team Member', phoneNumber: '', email: 'aashviaanand17@gmail.com' },
     { id: '2', name: 'Arpit Mishra', title: 'Team Member', phoneNumber: '', email: 'Arpitmishra272728@gmail.com' },
     { id: '3', name: 'Khushi', title: 'Team Member', phoneNumber: '', email: 'Kikokhushi582@gmail.com' },
-    { id: '4', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
-    { id: '5', name: 'Bhavika Bhalla', title: 'UI/UX Designer', phoneNumber: '555-0102', email: 'bhavika@example.com' },
-    { id: '6', name: 'Bhawna Kela', title: 'Project Manager', phoneNumber: '555-0103', email: 'bhawna@example.com' },
-    { id: '7', name: 'Rahul Singh', title: 'Data Analyst', phoneNumber: '555-0104', email: 'rahul@example.com' },
-    { id: '8', name: 'ACBD Employee', title: 'Associate', phoneNumber: '555-0105', email: 'acbd@example.com' },
+    { id: '3', name: 'Saurabh', title: 'Software Developer', phoneNumber: '', email: 'sourabhsingh22112003@gmail.com' },
+    { id: '5', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
+    { id: '6', name: 'Bhavika Bhalla', title: 'UI/UX Designer', phoneNumber: '555-0102', email: 'bhavika@example.com' },
+    { id: '7', name: 'Bhawna Kela', title: 'Project Manager', phoneNumber: '555-0103', email: 'bhawna@example.com' },
+    { id: '8', name: 'Rahul Singh', title: 'Data Analyst', phoneNumber: '555-0104', email: 'rahul@example.com' },
     { id: '9', name: 'Priya Sharma', title: 'Frontend Developer', phoneNumber: '555-0106', email: 'priya@example.com' },
     { id: '10', name: 'Amit Kumar', title: 'Graphic Designer', phoneNumber: '555-0107', email: 'amit@example.com' },
     { id: '11', name: 'Neha Gupta', title: 'Team Lead', phoneNumber: '555-0108', email: 'neha@example.com' },

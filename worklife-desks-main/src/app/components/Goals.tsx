@@ -453,7 +453,7 @@ export default function Goals({
             rounded-[28px]
             overflow-hidden
             bg-white
-            min-h-[400px]
+            min-h-[200px]
             flex
             flex-col
           "
@@ -493,12 +493,22 @@ export default function Goals({
                             <span className="text-xl font-semibold text-[#1e293b]">
                               {goal.goalTitle}
                             </span>
-                            <button 
-                              onClick={() => setExpandedWeeklyGoal(goal)}
-                              className="hover:opacity-70 transition-all p-1"
-                            >
-                              <Pencil className="w-4 h-4 text-[#166534]" />
-                            </button>
+                            <div className="flex items-center gap-1">
+                              <button 
+                                onClick={() => setExpandedWeeklyGoal(goal)}
+                                className="hover:opacity-70 transition-all p-1"
+                                title="Edit Goal"
+                              >
+                                <Pencil className="w-5 h-5 text-[#166534]" />
+                              </button>
+                              <button 
+                                onClick={() => setWeeklyGoalToDelete(goal.id)}
+                                className="hover:bg-red-50 rounded-full transition-all p-1.5 group"
+                                title="Delete Goal"
+                              >
+                                <Trash2 className="w-4 h-4 text-gray-400 group-hover:text-red-500 transition-colors" />
+                              </button>
+                            </div>
                           </div>
 
                           {goal.targets.map((target) => (
@@ -618,7 +628,7 @@ export default function Goals({
 
                     <Plus className="w-5 h-5" />
 
-                    Add Task
+                    Add Goal
 
                   </button>
 

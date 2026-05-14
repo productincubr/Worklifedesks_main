@@ -40,12 +40,12 @@ interface DailyTasksProps {
   onUpdateTask?: (taskId: string, updates: Partial<DailyTask>) => void;
 }
 
-export default function DailyTasks({ 
-  tasks, 
-  weeklyGoals, 
-  onAddTask, 
-  onToggleTask, 
-  onUpdateTaskStatus: _onUpdateTaskStatus, 
+export default function DailyTasks({
+  tasks,
+  weeklyGoals,
+  onAddTask,
+  onToggleTask,
+  onUpdateTaskStatus: _onUpdateTaskStatus,
   onUpdateTask
 }: DailyTasksProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -161,26 +161,38 @@ export default function DailyTasks({
   const activeTask = tasks.find(t => t.isActive);
 
   return (
-    <div className="p-8 max-w-5xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <div>
-          <h1 className="tracking-wide mb-3 text-black font-semibold" style={{ fontFamily: 'Inter, system-ui, sans-serif', fontSize: '2.4rem' }}>DAILY TASKS</h1>
-          {activeTask && (
-            <div className="flex items-center gap-2 mt-3 p-4 bg-accent border-2 border-primary rounded-lg hover:shadow-sm transition-shadow">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-              <span className="text-sm">Working on: <span className="font-semibold">{activeTask.title}</span></span>
-              <span className="text-sm text-gray-600">({formatTime(activeTaskTimes[activeTask.id] || activeTask.timeSpent)})</span>
-            </div>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="flex items-center gap-2 hover:shadow-md transition-all">
-                <Plus className="w-4 h-4" />
-                Add Task
-              </Button>
-            </DialogTrigger>
+<>
+<div className="bg-white rounded-[36px] border border-[#e5e7eb] overflow-hidden shadow-sm">
+
+      {/* HEADER */}
+      <div className="flex items-center justify-between px-10 py-8 border-b border-[#ececec]">
+
+        <h2 className="text-[34px] font-bold tracking-wide text-[#166534]">
+          TASKS
+        </h2>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+
+          <DialogTrigger asChild>
+
+            <button
+              className="
+          h-[45px]
+          px-5
+          rounded-[18px]
+          bg-[#166534]
+          text-white
+          text-[18px]
+          font-semibold
+          hover:bg-[#14532d]
+          transition-all
+        "
+            >
+              + Add Task
+            </button>
+
+          </DialogTrigger>
+
             <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Create New Task</DialogTitle>
@@ -291,331 +303,430 @@ export default function DailyTasks({
                 </Button>
               </div>
             </DialogContent>
-          </Dialog>
-        </div>
+
+        </Dialog>
+
       </div>
 
-      {tasks.length === 0 ? (
-        <Card className="p-12 text-center">
-          <p className="text-gray-500 mb-4">No tasks yet. Create your first task to get started!</p>
-          {weeklyGoals.length === 0 ? (
-            <p className="text-sm text-gray-400">Create weekly goals first to organize your tasks.</p>
-          ) : (
-            <Button onClick={() => setIsDialogOpen(true)}>
-              <Plus className="w-4 h-4 mr-2" />
-              Create First Task
-            </Button>
-          )}
-        </Card>
-      ) : (
-        <div className="bg-white rounded-xl border-2 border-gray-200 shadow-sm overflow-hidden">
-          {/* Task List */}
-          <div className="divide-y divide-gray-100">
-            {[...tasks].sort((a, b) => {
-              // Starred tasks come first
-              if (a.starred && !b.starred) return -1;
-              if (!a.starred && b.starred) return 1;
-              return 0;
-            }).map((task) => (
-              <div key={task.id} className="hover:bg-gray-50 transition-colors">
-                {/* Main Task Row */}
-                <div className="p-4 flex items-center gap-3">
-                  {/* Checkbox */}
-                  <Checkbox
-                    checked={task.status === 'Done'}
-                    onCheckedChange={() => onToggleTask(task.id)}
-                    className="h-5 w-5 flex-shrink-0"
-                  />
-                  
-                  {/* Star */}
-                  <button
-                    onClick={(e) => toggleStar(task.id, e)}
-                    className="flex-shrink-0 transition-colors"
-                  >
-                    {task.starred ? (
-                      <svg className="w-5 h-5 fill-yellow-400 stroke-yellow-400" viewBox="0 0 24 24" strokeWidth="2">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    ) : (
-                      <svg className="w-5 h-5 fill-none stroke-gray-400 hover:stroke-yellow-400" viewBox="0 0 24 24" strokeWidth="2">
-                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                      </svg>
-                    )}
-                  </button>
+      {/* TABLE HEADER */}
+      <div
+        className="
+    grid
+    grid-cols-[2.5fr_1.2fr_1.1fr_1fr_1fr_80px]
+    px-10
+    py-4
+    bg-[#f8fafc]
+    border-b
+    border-[#ececec]
+  "
+      >
 
-                  {/* Task Title */}
-                  <div className="flex-1 min-w-0">
-                    <p className={cn(
-                      "font-medium text-gray-800 truncate",
-                      task.status === 'Done' && 'line-through text-gray-400'
-                    )}>
-                      {task.title}
-                    </p>
-                  </div>
+        <p className="text-sm font-semibold text-[#6b7280]">
+          TASK
+        </p>
 
-                  {/* Due Date & Time */}
-                  <div className="flex items-center gap-2 text-sm text-gray-600 flex-shrink-0">
-                    <Calendar className="w-4 h-4" />
-                    <span>
-                      {new Date(task.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      {task.dueTime && <span className="ml-1">{task.dueTime}</span>}
-                    </span>
-                  </div>
+        <p className="text-sm font-semibold text-[#6b7280]">
+          ASSIGNED TO
+        </p>
 
-                  {/* Priority Badge */}
-                  <Badge className={cn("text-xs flex-shrink-0", getPriorityColor(task.priority))}>
-                    {task.priority}
-                  </Badge>
+        <p className="text-sm font-semibold text-[#6b7280]">
+          DUE DATE
+        </p>
 
-                  {/* Assigned To */}
-                  {task.assignedTo && (
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <Avatar className="h-7 w-7">
-                        <AvatarFallback className="bg-[#1a5f4a] text-white text-xs font-medium">
-                          {task.assignedTo.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
-                  )}
+        <p className="text-sm font-semibold text-[#6b7280]">
+          PRIORITY
+        </p>
 
-                  {/* Add to My Tasks Button */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => toggleAddToMyTasks(task.id, e)}
-                    className={cn(
-                      "flex-shrink-0 transition-all",
-                      task.addedToMyTasks && 'bg-[#1a5f4a] text-white hover:bg-[#164a3a] border-[#1a5f4a]'
-                    )}
-                  >
-                    {task.addedToMyTasks ? 'Added' : 'Add'}
-                  </Button>
+        <p className="text-sm font-semibold text-[#6b7280]">
+          STATUS
+        </p>
 
-                  {/* Notes Button */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleNoteExpansion(task.id)}
-                    className="flex-shrink-0 transition-colors"
-                  >
-                    <FileText 
-                      className={cn(
-                        "w-5 h-5",
-                        expandedNotes.has(task.id) ? 'text-[#1a5f4a]' : 'text-gray-400'
-                      )} 
-                    />
-                  </Button>
+      </div>
 
-                  {/* More Options */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setExpandedTask(task)}
-                    className="flex-shrink-0"
-                  >
-                    <MoreVertical className="w-4 h-4 text-gray-400" />
-                  </Button>
-                </div>
+      {/* TASK ROWS */}
+      <div>
 
-                {/* Expandable Notes Section */}
-                {expandedNotes.has(task.id) && (
-                  <div className="px-4 pb-4 pt-0 ml-14 border-t border-gray-100 bg-gray-50">
-                    <Textarea
-                      value={task.notes || ''}
-                      onChange={(e) => onUpdateTask && onUpdateTask(task.id, { notes: e.target.value })}
-                      placeholder="Add notes..."
-                      className="mt-3 bg-white"
-                      rows={3}
-                    />
-                  </div>
+        {tasks.map((task, index) => (
+
+          <div
+            key={task.id}
+            className={cn(
+              `
+          grid
+          grid-cols-[2.5fr_1.2fr_1.1fr_1fr_1fr_80px]
+          items-center
+          px-10
+          py-4
+          hover:bg-[#fafafa]
+          transition-all
+        `,
+              index !== tasks.length - 1 &&
+              'border-b border-[#f1f5f9]'
+            )}
+          >
+
+            {/* TASK */}
+            <div className="flex items-center gap-3">
+
+              <Checkbox
+                checked={task.status === 'Done'}
+                onCheckedChange={() => onToggleTask(task.id)}
+                className="
+            w-5
+            h-5
+            rounded border-[#cbd5e1]
+            data-[state=checked]:bg-[#2563eb]
+            data-[state=checked]:border-[#2563eb]
+          "
+              />
+
+              <button
+                onClick={(e) => toggleStar(task.id, e)}
+                className="flex-shrink-0 transition-colors mr-2"
+              >
+                {task.starred ? (
+                  <svg className="w-5 h-5 fill-yellow-400 stroke-yellow-400" viewBox="0 0 24 24" strokeWidth="2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 fill-none stroke-gray-400 hover:stroke-yellow-400" viewBox="0 0 24 24" strokeWidth="2">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
                 )}
+              </button>
+
+              <p
+                className={cn(
+                  `
+              text-base
+              font-medium
+              text-[#0f172a]
+              leading-tight
+            `,
+                  task.status === 'Done' &&
+                  'line-through text-gray-400'
+                )}
+              >
+                {task.title}
+              </p>
+
+            </div>
+
+            {/* USER */}
+            <div className="flex items-center gap-3">
+
+              {task.assignedTo ? (
+                <>
+                  <div
+                    className="
+                w-8
+                h-8
+                rounded-full
+                bg-[#166534]
+                text-white
+                flex
+                items-center
+                justify-center
+                text-xs
+                font-semibold
+                shrink-0
+              "
+                  >
+                    {task.assignedTo.charAt(0)}
+                  </div>
+                  <p className="text-sm text-[#475569]">
+                    {task.assignedTo}
+                  </p>
+                </>
+              ) : (
+                <p className="text-sm text-gray-400 italic">Unassigned</p>
+              )}
+
+            </div>
+
+            {/* DATE */}
+            <p className="text-sm text-[#64748b]">
+
+              {new Date(task.dueDate).toLocaleDateString(
+                'en-US',
+                {
+                  month: 'short',
+                  day: 'numeric',
+                  year: 'numeric',
+                }
+              )}
+
+            </p>
+
+            {/* PRIORITY */}
+            <div>
+
+              <span
+                className={cn(
+                  `
+              px-3
+              py-1
+              rounded-full
+              text-xs
+              font-semibold
+            `,
+                  task.priority === 'High' &&
+                  'bg-red-100 text-red-600',
+
+                  task.priority === 'Mid' &&
+                  'bg-orange-100 text-orange-600',
+
+                  task.priority === 'Low' &&
+                  'bg-green-100 text-green-600'
+                )}
+              >
+
+                {task.priority === 'Mid'
+                  ? 'Medium'
+                  : task.priority}
+
+              </span>
+
+            </div>
+
+            {/* STATUS */}
+            <div>
+
+              <span
+                className={cn(
+                  `
+              px-3
+              py-1
+              rounded-full
+              text-xs
+              font-semibold
+            `,
+                  task.status === 'Done' &&
+                  'bg-green-100 text-green-700',
+
+                  task.status === 'In Progress' &&
+                  'bg-blue-100 text-blue-700',
+
+                  task.status === 'To Do' &&
+                  'bg-gray-100 text-gray-600'
+                )}
+              >
+
+                {task.status === 'Done'
+                  ? 'Completed'
+                  : task.status}
+
+              </span>
+
+            </div>
+
+            {/* MENU */}
+            <button
+              onClick={() => setExpandedTask(task)}
+              className="
+          w-8
+          h-8
+          rounded-md
+          flex
+          items-center
+          justify-center
+          hover:bg-[#f3f4f6]
+          transition-all
+        "
+            >
+
+              <MoreVertical className="w-5 h-5 text-[#9ca3af]" />
+
+            </button>
+
+          </div>
+
+        ))}
+
+      </div>
+    </div>
+
+      {/* Expanded Task View */}
+  <Dialog open={!!expandedTask} onOpenChange={(open) => !open && setExpandedTask(null)}>
+    <DialogContent className="max-w-lg">
+      <DialogHeader>
+        <DialogTitle className="text-xl">{expandedTask?.title}</DialogTitle>
+      </DialogHeader>
+      {expandedTask && (
+        <div className="space-y-4 mt-4">
+          {/* Status Badge */}
+          <div className="flex items-center gap-2">
+            <Badge className={cn("text-xs", getPriorityColor(expandedTask?.priority))}>
+              {expandedTask?.priority} Priority
+            </Badge>
+            <Badge variant={expandedTask?.status === 'Done' ? 'default' : 'secondary'}>
+              {expandedTask?.status}
+            </Badge>
+          </div>
+
+          {/* Due Date */}
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-gray-500" />
+            <span className="text-sm text-gray-600">
+              Due: {new Date(expandedTask?.dueDate).toLocaleDateString('en-US', {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+              })}
+            </span>
+          </div>
+
+          {/* Time Spent */}
+          <div className="flex items-center gap-2">
+            <Clock className="w-4 h-4 text-gray-500" />
+            <span className="text-sm text-gray-600">
+              Time spent: {formatTime(activeTaskTimes[expandedTask?.id] || expandedTask?.timeSpent || 0)}
+            </span>
+          </div>
+
+          {/* Linked Weekly Goal */}
+          <div className="bg-gray-50 rounded-lg p-4">
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-4 h-4 text-[#1a5f4a]" />
+              <h4 className="text-sm font-semibold text-gray-700">Linked Weekly Goal</h4>
+            </div>
+            <p className="text-sm text-gray-600">
+              {weeklyGoals.find(g => g.id === expandedTask?.weeklyGoalId)?.goalTitle || 'Unknown'}
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Target: {weeklyGoals.find(g => g.id === expandedTask?.weeklyGoalId)?.targets.find(t => t.id === expandedTask?.targetId)?.title || 'Unknown'}
+            </p>
+          </div>
+
+          {/* Tags */}
+          {(expandedTask?.tags?.length || 0) > 0 && (
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Tags</h4>
+              <div className="flex flex-wrap gap-2">
+                {expandedTask?.tags.map((tag, idx) => (
+                  <Badge key={idx} variant="secondary" className="bg-blue-100 text-blue-700">
+                    {tag}
+                  </Badge>
+                ))}
               </div>
-            ))}
+            </div>
+          )}
+
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button variant="outline" onClick={() => setExpandedTask(null)}>
+              Close
+            </Button>
+            <Button
+              className="bg-[#1a5f4a] hover:bg-[#164a3a]"
+              onClick={() => {
+                setEditingTask(expandedTask);
+                setExpandedTask(null);
+              }}
+            >
+              <Pencil className="w-4 h-4 mr-2" />
+              Edit Task
+            </Button>
           </div>
         </div>
       )}
+    </DialogContent>
+  </Dialog>
 
-      {/* Expanded Task View */}
-      <Dialog open={!!expandedTask} onOpenChange={(open) => !open && setExpandedTask(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="text-xl">{expandedTask?.title}</DialogTitle>
-          </DialogHeader>
-          {expandedTask && (
-            <div className="space-y-4 mt-4">
-              {/* Status Badge */}
-              <div className="flex items-center gap-2">
-                <Badge className={cn("text-xs", getPriorityColor(expandedTask.priority))}>
-                  {expandedTask.priority} Priority
-                </Badge>
-                <Badge variant={expandedTask.status === 'Done' ? 'default' : 'secondary'}>
-                  {expandedTask.status}
-                </Badge>
-              </div>
-
-              {/* Due Date */}
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
-                  Due: {new Date(expandedTask.dueDate).toLocaleDateString('en-US', { 
-                    weekday: 'long',
-                    month: 'long', 
-                    day: 'numeric',
-                    year: 'numeric'
-                  })}
-                </span>
-              </div>
-
-              {/* Time Spent */}
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-gray-500" />
-                <span className="text-sm text-gray-600">
-                  Time spent: {formatTime(activeTaskTimes[expandedTask.id] || expandedTask.timeSpent)}
-                </span>
-              </div>
-
-              {/* Linked Weekly Goal */}
-              <div className="bg-gray-50 rounded-lg p-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <Target className="w-4 h-4 text-[#1a5f4a]" />
-                  <h4 className="text-sm font-semibold text-gray-700">Linked Weekly Goal</h4>
-                </div>
-                <p className="text-sm text-gray-600">
-                  {weeklyGoals.find(g => g.id === expandedTask.weeklyGoalId)?.goalTitle || 'Unknown'}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Target: {weeklyGoals.find(g => g.id === expandedTask.weeklyGoalId)?.targets.find(t => t.id === expandedTask.targetId)?.title || 'Unknown'}
-                </p>
-              </div>
-
-              {/* Tags */}
-              {expandedTask.tags.length > 0 && (
-                <div>
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Tags</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {expandedTask.tags.map((tag, idx) => (
-                      <Badge key={idx} variant="secondary" className="bg-blue-100 text-blue-700">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-              
-              <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={() => setExpandedTask(null)}>
-                  Close
-                </Button>
-                <Button 
-                  className="bg-[#1a5f4a] hover:bg-[#164a3a]" 
-                  onClick={() => {
-                    setEditingTask(expandedTask);
-                    setExpandedTask(null);
-                  }}
-                >
-                  <Pencil className="w-4 h-4 mr-2" />
-                  Edit Task
-                </Button>
-              </div>
+  {/* Edit Task Dialog */ }
+  <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
+    <DialogContent className="max-w-lg">
+      <DialogHeader>
+        <DialogTitle>Edit Task</DialogTitle>
+      </DialogHeader>
+      {editingTask && (
+        <div className="space-y-4 mt-4">
+          <div>
+            <Label>Task Title</Label>
+            <Input
+              value={editingTask.title}
+              onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value } as DailyTask)}
+            />
+          </div>
+          <div>
+            <Label>Due Date</Label>
+            <Input
+              type="date"
+              value={editingTask.dueDate}
+              onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value } as DailyTask)}
+            />
+          </div>
+          <div>
+            <Label>Priority</Label>
+            <select
+              value={editingTask.priority}
+              onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as any } as DailyTask)}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="Low">Low</option>
+              <option value="Mid">Mid</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+          <div>
+            <Label>Tags (comma-separated)</Label>
+            <Input
+              value={editingTask.tags.join(', ')}
+              onChange={(e) => setEditingTask({
+                ...editingTask,
+                tags: e.target.value.split(',').map(t => t.trim()).filter(t => t)
+              } as DailyTask)}
+            />
+          </div>
+          <div>
+            <Label>Weekly Goal</Label>
+            <select
+              value={editingTask.weeklyGoalId}
+              onChange={(e) => setEditingTask({ ...editingTask, weeklyGoalId: e.target.value, targetId: '' } as DailyTask)}
+              className="w-full p-2 border rounded-md"
+            >
+              <option value="">Choose a weekly goal...</option>
+              {weeklyGoals.map(goal => (
+                <option key={goal.id} value={goal.id}>{goal.goalTitle}</option>
+              ))}
+            </select>
+          </div>
+          {editingTask.weeklyGoalId && (
+            <div>
+              <Label>Target</Label>
+              <select
+                value={editingTask.targetId}
+                onChange={(e) => setEditingTask({ ...editingTask, targetId: e.target.value } as DailyTask)}
+                className="w-full p-2 border rounded-md"
+              >
+                <option value="">Choose a target...</option>
+                {weeklyGoals.find(g => g.id === editingTask.weeklyGoalId)?.targets.map(target => (
+                  <option key={target.id} value={target.id}>{target.title}</option>
+                ))}
+              </select>
             </div>
           )}
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Task Dialog */}
-      <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>Edit Task</DialogTitle>
-          </DialogHeader>
-          {editingTask && (
-            <div className="space-y-4 mt-4">
-              <div>
-                <Label>Task Title</Label>
-                <Input 
-                  value={editingTask.title}
-                  onChange={(e) => setEditingTask({...editingTask, title: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label>Due Date</Label>
-                <Input 
-                  type="date"
-                  value={editingTask.dueDate}
-                  onChange={(e) => setEditingTask({...editingTask, dueDate: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label>Priority</Label>
-                <select
-                  value={editingTask.priority}
-                  onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as any })}
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value="Low">Low</option>
-                  <option value="Mid">Mid</option>
-                  <option value="High">High</option>
-                </select>
-              </div>
-              <div>
-                <Label>Tags (comma-separated)</Label>
-                <Input 
-                  value={editingTask.tags.join(', ')}
-                  onChange={(e) => setEditingTask({
-                    ...editingTask, 
-                    tags: e.target.value.split(',').map(t => t.trim()).filter(t => t)
-                  })}
-                />
-              </div>
-              <div>
-                <Label>Weekly Goal</Label>
-                <select
-                  value={editingTask.weeklyGoalId}
-                  onChange={(e) => setEditingTask({ ...editingTask, weeklyGoalId: e.target.value, targetId: '' })}
-                  className="w-full p-2 border rounded-md"
-                >
-                  <option value="">Choose a weekly goal...</option>
-                  {weeklyGoals.map(goal => (
-                    <option key={goal.id} value={goal.id}>{goal.goalTitle}</option>
-                  ))}
-                </select>
-              </div>
-              {editingTask.weeklyGoalId && (
-                <div>
-                  <Label>Target</Label>
-                  <select
-                    value={editingTask.targetId}
-                    onChange={(e) => setEditingTask({ ...editingTask, targetId: e.target.value })}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="">Choose a target...</option>
-                    {weeklyGoals.find(g => g.id === editingTask.weeklyGoalId)?.targets.map(target => (
-                      <option key={target.id} value={target.id}>{target.title}</option>
-                    ))}
-                  </select>
-                </div>
-              )}
-              <div className="flex justify-end gap-2 pt-4">
-                <Button variant="outline" onClick={() => setEditingTask(null)}>
-                  Cancel
-                </Button>
-                <Button 
-                  className="bg-[#1a5f4a] hover:bg-[#164a3a]" 
-                  onClick={() => {
-                    if (editingTask && onUpdateTask) {
-                      onUpdateTask(editingTask.id, editingTask);
-                      setEditingTask(null);
-                    }
-                  }}
-                  disabled={!onUpdateTask}
-                >
-                  Save Changes
-                </Button>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
-    </div>
+          <div className="flex justify-end gap-2 pt-4">
+            <Button variant="outline" onClick={() => setEditingTask(null)}>
+              Cancel
+            </Button>
+            <Button
+              className="bg-[#1a5f4a] hover:bg-[#164a3a]"
+              onClick={() => {
+                if (editingTask && onUpdateTask) {
+                  onUpdateTask(editingTask.id, editingTask);
+                  setEditingTask(null);
+                }
+              }}
+              disabled={!onUpdateTask}
+            >
+              Save Changes
+            </Button>
+          </div>
+        </div>
+      )}
+    </DialogContent>
+  </Dialog>
+</>
   );
 }
