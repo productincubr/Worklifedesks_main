@@ -573,11 +573,11 @@ ${dailyTasks.filter(t => t.status === 'To Do').map(task => `
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
           <TabsList className="grid w-full max-w-xs grid-cols-2 mb-6 bg-gray-100 p-1">
             <TabsTrigger value="goals" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
-              <Target className="w-4 h-4" />
+              <Target className="w-5 h-5" />
               Goals
             </TabsTrigger>
             <TabsTrigger value="tasks" className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-white">
-              <CheckSquare className="w-4 h-4" />
+              <CheckSquare className="w-5 h-5" />
               Tasks
             </TabsTrigger>
           </TabsList>

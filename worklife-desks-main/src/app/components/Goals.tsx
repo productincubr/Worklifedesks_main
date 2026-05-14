@@ -22,12 +22,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/app/components/ui/alert-dialog';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/app/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/app/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/app/components/ui/select';
 
 interface GoalsProps {
   monthlyGoals: MonthlyGoal[];
@@ -56,18 +52,18 @@ export default function Goals({
   const [selectedMonthlyGoalId, setSelectedMonthlyGoalId] = useState<string | null>(null);
   const [editingMonthlyGoal, setEditingMonthlyGoal] = useState<MonthlyGoal | null>(null);
   const [editingWeeklyGoal, setEditingWeeklyGoal] = useState<WeeklyGoal | null>(null);
-  
+
   // Form validation errors
-  const [monthlyGoalErrors, setMonthlyGoalErrors] = useState<{title?: string; deadline?: string}>({});
-  
+  const [monthlyGoalErrors, setMonthlyGoalErrors] = useState<{ title?: string; deadline?: string }>({});
+
   // Delete confirmation states
   const [monthlyGoalToDelete, setMonthlyGoalToDelete] = useState<string | null>(null);
   const [weeklyGoalToDelete, setWeeklyGoalToDelete] = useState<string | null>(null);
-  
+
   // Expanded view states
   const [expandedMonthlyGoal, setExpandedMonthlyGoal] = useState<MonthlyGoal | null>(null);
   const [expandedWeeklyGoal, setExpandedWeeklyGoal] = useState<WeeklyGoal | null>(null);
-  
+
   // Form states for new monthly goal
   const [newMonthlyGoal, setNewMonthlyGoal] = useState({
     title: '',
@@ -92,28 +88,28 @@ export default function Goals({
     startOfWeek.setDate(today.getDate() - today.getDay() + 1 + (weekOffset * 7));
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(startOfWeek.getDate() + 6);
-    
+
     const formatDate = (date: Date) => date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     return `${formatDate(startOfWeek)} - ${formatDate(endOfWeek)}`;
   };
 
   const handleAddMonthlyGoal = () => {
-    const errors: {title?: string; deadline?: string} = {};
-    
+    const errors: { title?: string; deadline?: string } = {};
+
     if (!newMonthlyGoal.title.trim()) {
       errors.title = 'Title is required';
     }
-    
+
     if (newMonthlyGoal.deadline && new Date(newMonthlyGoal.deadline) < new Date()) {
       errors.deadline = 'Deadline must be in the future';
     }
-    
+
     if (Object.keys(errors).length > 0) {
       setMonthlyGoalErrors(errors);
       toast.error('Please fix the errors before submitting');
       return;
     }
-    
+
     if (newMonthlyGoal.title.trim()) {
       onAddMonthlyGoal({
         title: newMonthlyGoal.title,
@@ -179,41 +175,41 @@ export default function Goals({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 [&_h1]:font-sans [&_h2]:font-sans [&_h3]:font-sans [&_*]:font-sans" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-800">Goals</h1>
+      <div className="flex flex-col gap-4 items-center bg-gray-50">
+        {/* <div>
+          <h1 className="text-3xl  font-bold text-gray-800">Goals</h1>
           <p className="text-gray-500 text-sm">Monthly goals with nested weekly targets</p>
-        </div>
-        
+        </div> */}
+
         {/* Week Navigation */}
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-4 py-2 hover:border-gray-300 transition-colors">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="h-7 w-7 p-0"
               onClick={() => setSelectedWeek(prev => prev - 1)}
             >
               <ChevronLeft className="w-4 h-4" />
             </Button>
-            <span className="text-sm font-medium min-w-[140px] text-center">
+            <span className="text-xl font-medium min-w-[140px] text-center">
               {getWeekLabel(selectedWeek)}
             </span>
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               className="h-7 w-7 p-0"
               onClick={() => setSelectedWeek(prev => prev + 1)}
             >
               <ChevronRight className="w-4 h-4" />
             </Button>
           </div>
-          
+
           <Dialog open={isAddMonthlyOpen} onOpenChange={setIsAddMonthlyOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#1a5f4a] hover:bg-[#164a3a]">
+              <Button className="bg-[#1a5f4a] text-lg p-5.5 hover:bg-[#164a3a]">
                 <Plus className="w-4 h-4 mr-2" />
                 Add Monthly Goal
               </Button>
@@ -225,11 +221,11 @@ export default function Goals({
               <div className="space-y-4 mt-4">
                 <div>
                   <Label>Title *</Label>
-                  <Input 
+                  <Input
                     value={newMonthlyGoal.title}
                     onChange={(e) => {
-                      setNewMonthlyGoal({...newMonthlyGoal, title: e.target.value});
-                      if (monthlyGoalErrors.title) setMonthlyGoalErrors({...monthlyGoalErrors, title: undefined});
+                      setNewMonthlyGoal({ ...newMonthlyGoal, title: e.target.value });
+                      if (monthlyGoalErrors.title) setMonthlyGoalErrors({ ...monthlyGoalErrors, title: undefined });
                     }}
                     placeholder="What do you want to achieve?"
                     className={monthlyGoalErrors.title ? 'border-red-500' : ''}
@@ -240,20 +236,20 @@ export default function Goals({
                 </div>
                 <div>
                   <Label>Why is this important?</Label>
-                  <Textarea 
+                  <Textarea
                     value={newMonthlyGoal.why}
-                    onChange={(e) => setNewMonthlyGoal({...newMonthlyGoal, why: e.target.value})}
+                    onChange={(e) => setNewMonthlyGoal({ ...newMonthlyGoal, why: e.target.value })}
                     placeholder="Describe the motivation..."
                   />
                 </div>
                 <div>
                   <Label>Deadline</Label>
-                  <Input 
+                  <Input
                     type="date"
                     value={newMonthlyGoal.deadline}
                     onChange={(e) => {
-                      setNewMonthlyGoal({...newMonthlyGoal, deadline: e.target.value});
-                      if (monthlyGoalErrors.deadline) setMonthlyGoalErrors({...monthlyGoalErrors, deadline: undefined});
+                      setNewMonthlyGoal({ ...newMonthlyGoal, deadline: e.target.value });
+                      if (monthlyGoalErrors.deadline) setMonthlyGoalErrors({ ...monthlyGoalErrors, deadline: undefined });
                     }}
                     className={monthlyGoalErrors.deadline ? 'border-red-500' : ''}
                   />
@@ -263,9 +259,9 @@ export default function Goals({
                 </div>
                 <div>
                   <Label>Expected Outcome</Label>
-                  <Textarea 
+                  <Textarea
                     value={newMonthlyGoal.outcome}
-                    onChange={(e) => setNewMonthlyGoal({...newMonthlyGoal, outcome: e.target.value})}
+                    onChange={(e) => setNewMonthlyGoal({ ...newMonthlyGoal, outcome: e.target.value })}
                     placeholder="What does success look like?"
                   />
                 </div>
@@ -287,218 +283,354 @@ export default function Goals({
       </div>
 
       {/* Goals Layout - Monthly on left, Weekly nested on right */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {/* Header Row */}
-        <div className="grid grid-cols-[280px_1fr] border-b border-gray-200 bg-gray-50">
-          <div className="px-4 py-4 border-r border-gray-200">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#1a5f4a]" />
-              <span className="font-semibold text-gray-700 text-sm">Monthly Goals</span>
-            </div>
-          </div>
-          <div className="px-4 py-4">
-            <div className="flex items-center gap-2">
-              <Target className="w-4 h-4 text-[#1a5f4a]" />
-              <span className="font-semibold text-gray-700 text-sm">Weekly Targets</span>
-            </div>
-          </div>
+      <div className="bg-white rounded-[36px] border border-[#e5e7eb] p-14 shadow-sm">
+
+        {/* TOP AREA */}
+        <div className="mb-16">
+
+          <h1 className="text-[48px] font-bold leading-none text-[#065f46]">
+            MAY 2026
+          </h1>
+
+          <p className="mt-4 text-[20px] text-[#64748b]">
+            Plan your month. Stay focused and get things done.
+          </p>
+
         </div>
 
-        {/* Goals Rows */}
-        {monthlyGoals.length === 0 ? (
-          <div className="p-8 text-center">
-            <p className="text-gray-500 mb-4">No monthly goals yet. Add your first goal to get started!</p>
-            <Button 
-              onClick={() => setIsAddMonthlyOpen(true)}
-              className="bg-[#1a5f4a] hover:bg-[#164a3a]"
+        {/* HEADER */}
+        <div className="flex items-center justify-between mb-8">
+
+          <h2 className="text-[28px] font-bold text-[#0f172a]">
+            Monthly Goals
+          </h2>
+
+          <button
+            onClick={() => setIsAddMonthlyOpen(true)}
+            className="
+            h-[44px]
+            px-5
+            rounded-[20px]
+            border-2
+            border-[#166534]
+            text-[#166534]
+            font-semibold
+            text-[16px]
+            hover:bg-[#166534]
+            hover:text-white
+            transition-all
+            duration-300
+          "
+          >
+            + Add Goal
+          </button>
+
+        </div>
+
+        {/* GOALS LIST */}
+        <div className="space-y-7">
+
+          {monthlyGoals.map((goal, index) => (
+
+            <div
+              key={goal.id}
+              className="
+          bg-white
+          border
+          border-[#e5e7eb]
+          rounded-[30px]
+          px-6
+          py-5
+          flex
+          items-center
+          justify-between
+          shadow-sm
+          hover:shadow-md
+          transition-all
+          duration-300
+        "
             >
-              <Plus className="w-4 h-4 mr-2" />
-              Add Monthly Goal
-            </Button>
-          </div>
-        ) : (
-          monthlyGoals.map((monthlyGoal, index) => {
-            const weeklyGoalsForThisMonth = getWeeklyGoalsForMonthly(monthlyGoal.id);
-            
-            return (
-              <div 
-                key={monthlyGoal.id} 
-                className={cn(
-                  "grid grid-cols-[280px_1fr]",
-                  index !== monthlyGoals.length - 1 && "border-b border-gray-200"
-                )}
-              >
-                {/* Monthly Goal Card */}
-                <div className="p-4 border-r border-gray-200 bg-gray-50/50">
-                  <Card 
-                    className="p-4 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-gray-300 cursor-pointer"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-semibold text-gray-800 text-sm leading-tight pr-2">
-                        {monthlyGoal.title}
-                      </h3>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <button 
-                            className="h-5 w-5 p-0 text-gray-400 hover:text-gray-600 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
-                          >
-                            <MoreHorizontal className="w-3.5 h-3.5" />
-                          </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-40">
-                          <DropdownMenuItem onClick={() => setEditingMonthlyGoal(monthlyGoal)}>
-                            <Pencil className="w-4 h-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setExpandedMonthlyGoal(monthlyGoal)}>
-                            <Target className="w-4 h-4 mr-2" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => {
-                              setSelectedMonthlyGoalId(monthlyGoal.id);
-                              setIsAddWeeklyOpen(true);
-                            }}
-                          >
-                            <Plus className="w-4 h-4 mr-2" />
-                            Add Weekly Target
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            onClick={() => setMonthlyGoalToDelete(monthlyGoal.id)}
-                            className="text-red-600 focus:text-red-600"
-                          >
-                            <Trash2 className="w-4 h-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                    {monthlyGoal.deadline && (
-                      <p className="text-xs text-gray-500 mb-2">
-                        Due: {new Date(monthlyGoal.deadline).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </p>
-                    )}
-                    {monthlyGoal.why && (
-                      <p className="text-xs text-gray-600 line-clamp-2">{monthlyGoal.why}</p>
-                    )}
-                  </Card>
+
+              {/* LEFT */}
+              <div className="flex items-center gap-7">
+
+                {/* ICON BOX */}
+                <div
+                  className="
+              w-[64px]
+              h-[64px]
+              rounded-[24px]
+              bg-[#edf8f1]
+              flex
+              items-center
+              justify-center
+              shrink-0
+            "
+                >
+
+                  <Target className="w-8 h-8 text-[#166534]" />
+
                 </div>
 
-                {/* Weekly Goals for this Monthly Goal */}
-                <div className="p-4 min-h-[100px]">
-                  {weeklyGoalsForThisMonth.length === 0 ? (
-                    <div className="h-full flex items-center justify-center">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="text-gray-500 border-dashed hover:border-solid hover:bg-gray-50 transition-all"
-                        onClick={() => {
-                          setSelectedMonthlyGoalId(monthlyGoal.id);
-                          setIsAddWeeklyOpen(true);
-                        }}
-                      >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Add Weekly Target
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-wrap gap-2">
-                      {weeklyGoalsForThisMonth.map((weeklyGoal, index) => (
-                        <Card 
-                          key={weeklyGoal.id} 
-                          className="p-4 bg-white border border-gray-200 shadow-sm hover:shadow-md transition-all hover:border-gray-300 flex-shrink-0 w-[200px]"
+                {/* TEXT */}
+                <div>
+
+                  <p className="text-[#166534] font-semibold text-[16px]">
+                    Goal {index + 1}
+                  </p>
+
+                  <h2
+                    className="
+                text-[22px]
+                font-bold
+                text-[#0f172a]
+                leading-tight
+                mt-1
+              "
+                  >
+                    {goal.title}
+                  </h2>
+
+                </div>
+
+              </div>
+
+              {/* RIGHT */}
+              <button
+                onClick={() => setEditingMonthlyGoal(goal)}
+                className="
+            w-[40px]
+            h-[40px]
+            rounded-xl
+            flex
+            items-center
+            justify-center
+            hover:bg-[#f8fafc]
+            transition-all
+          "
+              >
+
+                <Pencil className="w-5 h-5 text-[#166534]" />
+
+              </button>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+      {/* Add Weekly Goal Dialog */}
+      <div className="bg-white rounded-[36px] border border-[#e5e7eb] p-10 shadow-sm mb-10">
+
+        {/* HEADER */}
+        <div className="flex items-center gap-4 mb-10">
+
+          <h2 className="text-[32px] font-bold text-[#0f172a]">
+            Weekly Goal
+          </h2>
+
+        </div>
+
+        {/* WEEK GRID */}
+        <div className="grid grid-cols-4 gap-8">
+
+          {[1, 2, 3, 4].map((week) => {
+
+            const currentWeekGoals = weeklyGoals.filter(
+              (goal) => goal.weekNumber === week
+            );
+
+            return (
+
+              <div
+                key={week}
+                className="
+            border
+            border-[#d1d5db]
+            rounded-[28px]
+            overflow-hidden
+            bg-white
+            min-h-[400px]
+            flex
+            flex-col
+          "
+              >
+
+                {/* TOP */}
+                <div className="p-8 flex-1">
+
+                  {/* WEEK HEADER */}
+                  <div className="flex items-center justify-between mb-8">
+
+                    <h3 className="text-[24px] font-bold text-[#1e293b]">
+                      Week {week}
+                    </h3>
+
+                  </div>
+
+                  {/* TASKS */}
+                  <div className="space-y-6">
+
+                    {currentWeekGoals.length === 0 ? (
+
+                      <p className="text-[#94a3b8] text-[14px]">
+                        No tasks added
+                      </p>
+
+                    ) : (
+
+                      currentWeekGoals.map((goal) => (
+
+                        <div
+                          key={goal.id}
+                          className="space-y-5"
                         >
-                          {/* Week Tag */}
-                          <div className="mb-2">
-                            <span className="text-[10px] font-semibold text-[#1a5f4a] bg-[#1a5f4a]/10 px-2 py-0.5 rounded-full">
-                              Week {weeklyGoal.weekNumber || index + 1}
+
+                          <div className="flex items-center justify-between">
+                            <span className="text-xl font-semibold text-[#1e293b]">
+                              {goal.goalTitle}
                             </span>
+                            <button 
+                              onClick={() => setExpandedWeeklyGoal(goal)}
+                              className="hover:opacity-70 transition-all p-1"
+                            >
+                              <Pencil className="w-4 h-4 text-[#166534]" />
+                            </button>
                           </div>
-                          
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-medium text-gray-800 text-sm leading-tight pr-2">
-                              {weeklyGoal.goalTitle}
-                            </h4>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <button 
-                                  className="h-5 w-5 p-0 text-gray-400 hover:text-gray-600 flex items-center justify-center rounded hover:bg-gray-100 transition-colors"
-                                >
-                                  <MoreHorizontal className="w-3.5 h-3.5" />
-                                </button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end" className="w-40">
-                                <DropdownMenuItem 
-                                  onClick={() => setEditingWeeklyGoal(weeklyGoal)}
-                                >
-                                  <Pencil className="w-4 h-4 mr-2" />
-                                  Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => setExpandedWeeklyGoal(weeklyGoal)}
-                                >
-                                  <Target className="w-4 h-4 mr-2" />
-                                  View Details
-                                </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => setWeeklyGoalToDelete(weeklyGoal.id)}
-                                  className="text-red-600 focus:text-red-600"
-                                >
-                                  <Trash2 className="w-4 h-4 mr-2" />
-                                  Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                          
-                          {/* Targets as checkboxes */}
-                          <div className="space-y-1.5">
-                            {weeklyGoal.targets.slice(0, 3).map((target) => (
-                              <div key={target.id} className="flex items-start gap-2">
+
+                          {goal.targets.map((target) => (
+
+                            <label
+                              key={target.id}
+                              className="
+                          flex
+                          items-start
+                          gap-4
+                          cursor-pointer
+                          group
+                        "
+                            >
+
+                              {/* CHECKBOX */}
+                              <div
+                                className="
+                            mt-1
+                            w-7
+                            h-7
+                            rounded-[8px]
+                            border
+                            border-[#cbd5e1]
+                            flex
+                            items-center
+                            justify-center
+                            shrink-0
+                            group-hover:border-[#166534]
+                            transition-all
+                          "
+                              >
+
                                 <Checkbox
                                   checked={target.completed || false}
                                   onCheckedChange={(checked) => {
-                                    const updatedTargets = weeklyGoal.targets.map(t => 
-                                      t.id === target.id ? { ...t, completed: checked as boolean } : t
+
+                                    const updatedTargets = goal.targets.map((t) =>
+                                      t.id === target.id
+                                        ? {
+                                          ...t,
+                                          completed: checked as boolean,
+                                        }
+                                        : t
                                     );
-                                    onUpdateWeeklyGoal({ ...weeklyGoal, targets: updatedTargets });
+
+                                    onUpdateWeeklyGoal({
+                                      ...goal,
+                                      targets: updatedTargets,
+                                    });
                                   }}
-                                  className="h-3.5 w-3.5 mt-0.5"
+                                  className="border-none shadow-none"
                                 />
-                                <span className={cn(
-                                  "text-xs text-gray-600 line-clamp-1",
-                                  target.completed && "line-through text-gray-400"
-                                )}>
-                                  {target.title}
-                                </span>
+
                               </div>
-                            ))}
-                            {weeklyGoal.targets.length > 3 && (
-                              <span className="text-xs text-gray-400">+{weeklyGoal.targets.length - 3} more</span>
-                            )}
-                          </div>
-                        </Card>
-                      ))}
-                      
-                      {/* Add button */}
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="h-auto py-6 px-4 text-gray-500 border-dashed flex-shrink-0"
-                        onClick={() => {
-                          setSelectedMonthlyGoalId(monthlyGoal.id);
-                          setIsAddWeeklyOpen(true);
-                        }}
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  )}
+
+                              {/* TEXT */}
+                              <span
+                                className={cn(
+                                  `
+                              text-[18px]
+                              leading-[1.4]
+                              text-[#475569]
+                              font-medium
+                            `,
+                                  target.completed &&
+                                  'line-through text-gray-400'
+                                )}
+                              >
+                                {target.title}
+                              </span>
+
+                            </label>
+
+                          ))}
+
+                        </div>
+
+                      ))
+
+                    )}
+
+                  </div>
+
                 </div>
+
+                {/* FOOTER */}
+                <div
+                  className="
+              border-t
+              border-[#e5e7eb]
+              px-6
+              py-4
+            "
+                >
+
+                  <button
+                    onClick={() => {
+                      setSelectedMonthlyGoalId(monthlyGoals[0]?.id);
+                      setNewWeeklyGoal({
+                        ...newWeeklyGoal,
+                        weekNumber: week,
+                      });
+                      setIsAddWeeklyOpen(true);
+                    }}
+                    className="
+                flex
+                items-center
+                gap-3
+                text-[#166534]
+                font-semibold
+                text-[18px]
+                hover:opacity-70
+                transition-all
+              "
+                  >
+
+                    <Plus className="w-5 h-5" />
+
+                    Add Task
+
+                  </button>
+
+                </div>
+
               </div>
+
             );
-          })
-        )}
+          })}
+
+        </div>
+
       </div>
 
       {/* Add Weekly Goal Dialog */}
@@ -510,11 +642,24 @@ export default function Goals({
           <div className="space-y-4 mt-4">
             <div>
               <Label>Target Title</Label>
-              <Input 
+              <Input
                 value={newWeeklyGoal.goalTitle}
-                onChange={(e) => setNewWeeklyGoal({...newWeeklyGoal, goalTitle: e.target.value})}
-                placeholder="What's your weekly target?"
+                onChange={(e) => setNewWeeklyGoal({ ...newWeeklyGoal, goalTitle: e.target.value })}
+                placeholder="What is the main target for this week?"
               />
+            </div>
+            <div>
+              <Label>Month Goal</Label>
+              <Select value={selectedMonthlyGoalId || ''} onValueChange={setSelectedMonthlyGoalId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a monthly goal" />
+                </SelectTrigger>
+                <SelectContent>
+                  {monthlyGoals.map(mg => (
+                    <SelectItem key={mg.id} value={mg.id}>{mg.title}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div>
               <Label>Week</Label>
@@ -523,10 +668,10 @@ export default function Goals({
                   <Button
                     key={week}
                     type="button"
-                    variant={newWeeklyGoal.weekNumber === week ? "default" : "outline"}
+                    variant={(newWeeklyGoal.weekNumber || 1) === week ? "default" : "outline"}
                     size="sm"
-                    className={newWeeklyGoal.weekNumber === week ? "bg-[#1a5f4a] hover:bg-[#164a3a]" : ""}
-                    onClick={() => setNewWeeklyGoal({...newWeeklyGoal, weekNumber: week})}
+                    className={(newWeeklyGoal.weekNumber || 1) === week ? "bg-[#1a5f4a] hover:bg-[#164a3a]" : ""}
+                    onClick={() => setNewWeeklyGoal({ ...newWeeklyGoal, weekNumber: week })}
                   >
                     Week {week}
                   </Button>
@@ -538,22 +683,22 @@ export default function Goals({
               <div className="space-y-2 mt-2">
                 {newWeeklyGoal.targets.map((target, idx) => (
                   <div key={idx} className="flex gap-2">
-                    <Input 
+                    <Input
                       value={target.title}
+                      placeholder="Sub-target item"
                       onChange={(e) => {
                         const newTargets = [...newWeeklyGoal.targets];
                         newTargets[idx].title = e.target.value;
-                        setNewWeeklyGoal({...newWeeklyGoal, targets: newTargets});
+                        setNewWeeklyGoal({ ...newWeeklyGoal, targets: newTargets });
                       }}
-                      placeholder={`Sub-target ${idx + 1}`}
                     />
                     {newWeeklyGoal.targets.length > 1 && (
-                      <Button 
-                        variant="ghost" 
+                      <Button
+                        variant="ghost"
                         size="sm"
                         onClick={() => {
                           const newTargets = newWeeklyGoal.targets.filter((_, i) => i !== idx);
-                          setNewWeeklyGoal({...newWeeklyGoal, targets: newTargets});
+                          setNewWeeklyGoal({ ...newWeeklyGoal, targets: newTargets });
                         }}
                       >
                         <X className="w-4 h-4" />
@@ -561,13 +706,17 @@ export default function Goals({
                     )}
                   </div>
                 ))}
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   size="sm"
                   onClick={() => {
                     setNewWeeklyGoal({
-                      ...newWeeklyGoal, 
-                      targets: [...newWeeklyGoal.targets, { id: '', title: '', actionSteps: [''] }]
+                      ...newWeeklyGoal,
+                      targets: [...newWeeklyGoal.targets, {
+                        id: `target-${Date.now()}`,
+                        title: '',
+                        actionSteps: []
+                      }]
                     });
                   }}
                 >
@@ -598,31 +747,31 @@ export default function Goals({
             <div className="space-y-4 mt-4">
               <div>
                 <Label>Title</Label>
-                <Input 
+                <Input
                   value={editingMonthlyGoal.title}
-                  onChange={(e) => setEditingMonthlyGoal({...editingMonthlyGoal, title: e.target.value})}
+                  onChange={(e) => setEditingMonthlyGoal({ ...editingMonthlyGoal, title: e.target.value })}
                 />
               </div>
               <div>
                 <Label>Why is this important?</Label>
-                <Textarea 
+                <Textarea
                   value={editingMonthlyGoal.why}
-                  onChange={(e) => setEditingMonthlyGoal({...editingMonthlyGoal, why: e.target.value})}
+                  onChange={(e) => setEditingMonthlyGoal({ ...editingMonthlyGoal, why: e.target.value })}
                 />
               </div>
               <div>
                 <Label>Deadline</Label>
-                <Input 
+                <Input
                   type="date"
                   value={editingMonthlyGoal.deadline}
-                  onChange={(e) => setEditingMonthlyGoal({...editingMonthlyGoal, deadline: e.target.value})}
+                  onChange={(e) => setEditingMonthlyGoal({ ...editingMonthlyGoal, deadline: e.target.value })}
                 />
               </div>
               <div>
                 <Label>Expected Outcome</Label>
-                <Textarea 
+                <Textarea
                   value={editingMonthlyGoal.outcome}
-                  onChange={(e) => setEditingMonthlyGoal({...editingMonthlyGoal, outcome: e.target.value})}
+                  onChange={(e) => setEditingMonthlyGoal({ ...editingMonthlyGoal, outcome: e.target.value })}
                 />
               </div>
               <div className="flex justify-end gap-2">
@@ -648,9 +797,9 @@ export default function Goals({
             <div className="space-y-4 mt-4">
               <div>
                 <Label>Target Title</Label>
-                <Input 
+                <Input
                   value={editingWeeklyGoal.goalTitle}
-                  onChange={(e) => setEditingWeeklyGoal({...editingWeeklyGoal, goalTitle: e.target.value})}
+                  onChange={(e) => setEditingWeeklyGoal({ ...editingWeeklyGoal, goalTitle: e.target.value })}
                 />
               </div>
               <div>
@@ -663,7 +812,7 @@ export default function Goals({
                       variant={(editingWeeklyGoal.weekNumber || 1) === week ? "default" : "outline"}
                       size="sm"
                       className={(editingWeeklyGoal.weekNumber || 1) === week ? "bg-[#1a5f4a] hover:bg-[#164a3a]" : ""}
-                      onClick={() => setEditingWeeklyGoal({...editingWeeklyGoal, weekNumber: week})}
+                      onClick={() => setEditingWeeklyGoal({ ...editingWeeklyGoal, weekNumber: week })}
                     >
                       Week {week}
                     </Button>
@@ -675,21 +824,21 @@ export default function Goals({
                 <div className="space-y-2 mt-2">
                   {editingWeeklyGoal.targets.map((target, idx) => (
                     <div key={target.id || idx} className="flex gap-2">
-                      <Input 
+                      <Input
                         value={target.title}
                         onChange={(e) => {
                           const newTargets = [...editingWeeklyGoal.targets];
                           newTargets[idx].title = e.target.value;
-                          setEditingWeeklyGoal({...editingWeeklyGoal, targets: newTargets});
+                          setEditingWeeklyGoal({ ...editingWeeklyGoal, targets: newTargets });
                         }}
                       />
                       {editingWeeklyGoal.targets.length > 1 && (
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="sm"
                           onClick={() => {
                             const newTargets = editingWeeklyGoal.targets.filter((_, i) => i !== idx);
-                            setEditingWeeklyGoal({...editingWeeklyGoal, targets: newTargets});
+                            setEditingWeeklyGoal({ ...editingWeeklyGoal, targets: newTargets });
                           }}
                         >
                           <X className="w-4 h-4" />
@@ -697,16 +846,16 @@ export default function Goals({
                       )}
                     </div>
                   ))}
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       setEditingWeeklyGoal({
-                        ...editingWeeklyGoal, 
-                        targets: [...editingWeeklyGoal.targets, { 
-                          id: `target-${Date.now()}`, 
-                          title: '', 
-                          actionSteps: [] 
+                        ...editingWeeklyGoal,
+                        targets: [...editingWeeklyGoal.targets, {
+                          id: `target-${Date.now()}`,
+                          title: '',
+                          actionSteps: []
                         }]
                       });
                     }}
@@ -740,9 +889,9 @@ export default function Goals({
               {/* Title */}
               <div>
                 <Label className="text-sm font-semibold text-gray-700">Goal Title</Label>
-                <Input 
+                <Input
                   value={expandedMonthlyGoal.title}
-                  onChange={(e) => setExpandedMonthlyGoal({...expandedMonthlyGoal, title: e.target.value})}
+                  onChange={(e) => setExpandedMonthlyGoal({ ...expandedMonthlyGoal, title: e.target.value })}
                   className="mt-1"
                   placeholder="What do you want to achieve?"
                 />
@@ -753,73 +902,73 @@ export default function Goals({
                 <Label className="text-sm font-semibold text-gray-700">Deadline</Label>
                 <div className="flex items-center gap-2 mt-1">
                   <Calendar className="w-4 h-4 text-gray-500" />
-                  <Input 
+                  <Input
                     type="date"
                     value={expandedMonthlyGoal.deadline || ''}
-                    onChange={(e) => setExpandedMonthlyGoal({...expandedMonthlyGoal, deadline: e.target.value})}
+                    onChange={(e) => setExpandedMonthlyGoal({ ...expandedMonthlyGoal, deadline: e.target.value })}
                     className="flex-1"
                   />
                 </div>
               </div>
-              
+
               {/* Why */}
               <div>
                 <Label className="text-sm font-semibold text-gray-700">Why is this important?</Label>
-                <Textarea 
+                <Textarea
                   value={expandedMonthlyGoal.why || ''}
-                  onChange={(e) => setExpandedMonthlyGoal({...expandedMonthlyGoal, why: e.target.value})}
+                  onChange={(e) => setExpandedMonthlyGoal({ ...expandedMonthlyGoal, why: e.target.value })}
                   className="mt-1"
                   placeholder="Describe the motivation behind this goal..."
                   rows={3}
                 />
               </div>
-              
+
               {/* Expected Outcome */}
               <div>
                 <Label className="text-sm font-semibold text-gray-700">Expected Outcome</Label>
-                <Textarea 
+                <Textarea
                   value={expandedMonthlyGoal.outcome || ''}
-                  onChange={(e) => setExpandedMonthlyGoal({...expandedMonthlyGoal, outcome: e.target.value})}
+                  onChange={(e) => setExpandedMonthlyGoal({ ...expandedMonthlyGoal, outcome: e.target.value })}
                   className="mt-1"
                   placeholder="What does success look like?"
                   rows={3}
                 />
               </div>
-              
+
               {/* Resources */}
               <div>
                 <Label className="text-sm font-semibold text-gray-700">Resources Needed</Label>
-                <Textarea 
+                <Textarea
                   value={expandedMonthlyGoal.resources || ''}
-                  onChange={(e) => setExpandedMonthlyGoal({...expandedMonthlyGoal, resources: e.target.value})}
+                  onChange={(e) => setExpandedMonthlyGoal({ ...expandedMonthlyGoal, resources: e.target.value })}
                   className="mt-1"
                   placeholder="What resources do you need?"
                   rows={2}
                 />
               </div>
-              
+
               {/* Next Steps */}
               <div>
                 <Label className="text-sm font-semibold text-gray-700">Next Steps</Label>
                 <div className="space-y-2 mt-2">
                   {(expandedMonthlyGoal.nextSteps || ['']).map((step, idx) => (
                     <div key={idx} className="flex gap-2">
-                      <Input 
+                      <Input
                         value={step}
                         onChange={(e) => {
                           const newSteps = [...(expandedMonthlyGoal.nextSteps || [''])];
                           newSteps[idx] = e.target.value;
-                          setExpandedMonthlyGoal({...expandedMonthlyGoal, nextSteps: newSteps});
+                          setExpandedMonthlyGoal({ ...expandedMonthlyGoal, nextSteps: newSteps });
                         }}
                         placeholder={`Step ${idx + 1}`}
                       />
                       {(expandedMonthlyGoal.nextSteps || []).length > 1 && (
-                        <Button 
-                          variant="ghost" 
+                        <Button
+                          variant="ghost"
                           size="sm"
                           onClick={() => {
                             const newSteps = (expandedMonthlyGoal.nextSteps || []).filter((_, i) => i !== idx);
-                            setExpandedMonthlyGoal({...expandedMonthlyGoal, nextSteps: newSteps});
+                            setExpandedMonthlyGoal({ ...expandedMonthlyGoal, nextSteps: newSteps });
                           }}
                         >
                           <X className="w-4 h-4" />
@@ -827,12 +976,12 @@ export default function Goals({
                       )}
                     </div>
                   ))}
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       setExpandedMonthlyGoal({
-                        ...expandedMonthlyGoal, 
+                        ...expandedMonthlyGoal,
                         nextSteps: [...(expandedMonthlyGoal.nextSteps || []), '']
                       });
                     }}
@@ -847,8 +996,8 @@ export default function Goals({
               <div className="border-t pt-4">
                 <div className="flex items-center justify-between mb-3">
                   <h4 className="text-sm font-semibold text-gray-700">Weekly Targets</h4>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => {
                       setSelectedMonthlyGoalId(expandedMonthlyGoal.id);
@@ -861,8 +1010,8 @@ export default function Goals({
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {weeklyGoals.filter(wg => wg.monthlyGoalId === expandedMonthlyGoal.id).map((wg, idx) => (
-                    <div 
-                      key={wg.id} 
+                    <div
+                      key={wg.id}
                       className="bg-[#1a5f4a]/5 border border-[#1a5f4a]/20 rounded-lg p-3 text-sm cursor-pointer hover:border-[#1a5f4a]/40 transition-colors"
                       onClick={() => {
                         setExpandedWeeklyGoal(wg);
@@ -880,7 +1029,7 @@ export default function Goals({
                   )}
                 </div>
               </div>
-              
+
               <div className="flex justify-between gap-2 pt-4 border-t">
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -898,7 +1047,7 @@ export default function Goals({
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction 
+                      <AlertDialogAction
                         onClick={() => {
                           onDeleteMonthlyGoal(expandedMonthlyGoal.id);
                           setExpandedMonthlyGoal(null);
@@ -914,8 +1063,8 @@ export default function Goals({
                   <Button variant="outline" onClick={() => setExpandedMonthlyGoal(null)}>
                     Cancel
                   </Button>
-                  <Button 
-                    className="bg-[#1a5f4a] hover:bg-[#164a3a]" 
+                  <Button
+                    className="bg-[#1a5f4a] hover:bg-[#164a3a]"
                     onClick={() => {
                       onUpdateMonthlyGoal(expandedMonthlyGoal.id, expandedMonthlyGoal);
                       setExpandedMonthlyGoal(null);
@@ -951,7 +1100,7 @@ export default function Goals({
                   {monthlyGoals.find(mg => mg.id === expandedWeeklyGoal.monthlyGoalId)?.title || 'Unknown'}
                 </p>
               </div>
-              
+
               {/* Targets/Sub-targets */}
               <div>
                 <h4 className="text-sm font-semibold text-gray-700 mb-3">Sub-targets ({expandedWeeklyGoal.targets.length})</h4>
@@ -977,13 +1126,13 @@ export default function Goals({
                   ))}
                 </div>
               </div>
-              
+
               <div className="flex justify-end gap-2 pt-4 border-t">
                 <Button variant="outline" onClick={() => setExpandedWeeklyGoal(null)}>
                   Close
                 </Button>
-                <Button 
-                  className="bg-[#1a5f4a] hover:bg-[#164a3a]" 
+                <Button
+                  className="bg-[#1a5f4a] hover:bg-[#164a3a]"
                   onClick={() => {
                     setEditingWeeklyGoal(expandedWeeklyGoal);
                     setExpandedWeeklyGoal(null);
