@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card } from '@/app/components/ui/card';
 import { Button } from '@/app/components/ui/button';
 import { Input } from '@/app/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/app/components/ui/dialog';
@@ -7,8 +6,8 @@ import { Label } from '@/app/components/ui/label';
 import { Badge } from '@/app/components/ui/badge';
 import { Checkbox } from '@/app/components/ui/checkbox';
 import { Textarea } from '@/app/components/ui/textarea';
-import { Avatar, AvatarFallback } from '@/app/components/ui/avatar';
-import { Plus, Calendar, Clock, MoreVertical, Pencil, Target, FileText } from 'lucide-react';
+
+import { Calendar, Clock, MoreVertical, Pencil, Target } from 'lucide-react';
 import { cn } from '@/app/components/ui/utils';
 
 export interface DailyTask {
@@ -51,7 +50,7 @@ export default function DailyTasks({
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [expandedTask, setExpandedTask] = useState<DailyTask | null>(null);
   const [editingTask, setEditingTask] = useState<DailyTask | null>(null);
-  const [expandedNotes, setExpandedNotes] = useState<Set<string>>(new Set());
+
   const [newTask, setNewTask] = useState({
     weeklyGoalId: '',
     targetId: '',
@@ -136,29 +135,11 @@ export default function DailyTasks({
     }
   };
 
-  const toggleAddToMyTasks = (taskId: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (onUpdateTask) {
-      const task = tasks.find(t => t.id === taskId);
-      if (task) {
-        onUpdateTask(taskId, { addedToMyTasks: !task.addedToMyTasks });
-      }
-    }
-  };
 
-  const toggleNoteExpansion = (taskId: string) => {
-    setExpandedNotes(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(taskId)) {
-        newSet.delete(taskId);
-      } else {
-        newSet.add(taskId);
-      }
-      return newSet;
-    });
-  };
 
-  const activeTask = tasks.find(t => t.isActive);
+
+
+
 
   return (
 <>
@@ -197,107 +178,107 @@ export default function DailyTasks({
               <DialogHeader>
                 <DialogTitle>Create New Task</DialogTitle>
               </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="weeklyGoal">Select Weekly Goal *</Label>
-                  <select
-                    id="weeklyGoal"
-                    value={newTask.weeklyGoalId}
-                    onChange={(e) => setNewTask({ ...newTask, weeklyGoalId: e.target.value, targetId: '' })}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="">Choose a weekly goal...</option>
-                    {weeklyGoals.map(goal => (
-                      <option key={goal.id} value={goal.id}>{goal.goalTitle}</option>
-                    ))}
-                  </select>
-                </div>
-                {selectedGoal && (
-                  <div className="space-y-2">
-                    <Label htmlFor="target">Select Target *</Label>
+                <div className="space-y-6 py-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-medium text-gray-700" htmlFor="weeklyGoal">Select Weekly Goal *</Label>
                     <select
-                      id="target"
-                      value={newTask.targetId}
-                      onChange={(e) => setNewTask({ ...newTask, targetId: e.target.value })}
-                      className="w-full p-2 border rounded-md"
+                      id="weeklyGoal"
+                      value={newTask.weeklyGoalId}
+                      onChange={(e) => setNewTask({ ...newTask, weeklyGoalId: e.target.value, targetId: '' })}
+                      className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
                     >
-                      <option value="">Choose a target...</option>
-                      {selectedGoal.targets.map(target => (
-                        <option key={target.id} value={target.id}>{target.title}</option>
+                      <option value="">Choose a weekly goal...</option>
+                      {weeklyGoals.map(goal => (
+                        <option key={goal.id} value={goal.id}>{goal.goalTitle}</option>
                       ))}
                     </select>
                   </div>
-                )}
-                <div className="space-y-2">
-                  <Label htmlFor="taskTitle">Task Title *</Label>
-                  <Input
-                    id="taskTitle"
-                    value={newTask.title}
-                    onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
-                    placeholder="e.g., Website Development"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="dueDate">Due Date *</Label>
+                  {selectedGoal && (
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-medium text-gray-700" htmlFor="target">Select Target *</Label>
+                      <select
+                        id="target"
+                        value={newTask.targetId}
+                        onChange={(e) => setNewTask({ ...newTask, targetId: e.target.value })}
+                        className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                      >
+                        <option value="">Choose a target...</option>
+                        {selectedGoal.targets.map(target => (
+                          <option key={target.id} value={target.id}>{target.title}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-medium text-gray-700" htmlFor="taskTitle">Task Title *</Label>
                     <Input
-                      id="dueDate"
-                      type="date"
-                      value={newTask.dueDate}
-                      onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                      id="taskTitle"
+                      value={newTask.title}
+                      onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+                      placeholder="e.g., Website Development"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="dueTime">Due Time</Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-medium text-gray-700" htmlFor="dueDate">Due Date *</Label>
+                      <Input
+                        id="dueDate"
+                        type="date"
+                        value={newTask.dueDate}
+                        onChange={(e) => setNewTask({ ...newTask, dueDate: e.target.value })}
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-medium text-gray-700" htmlFor="dueTime">Due Time</Label>
+                      <Input
+                        id="dueTime"
+                        type="time"
+                        value={newTask.dueTime}
+                        onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-medium text-gray-700" htmlFor="assignedTo">Assigned To</Label>
                     <Input
-                      id="dueTime"
-                      type="time"
-                      value={newTask.dueTime}
-                      onChange={(e) => setNewTask({ ...newTask, dueTime: e.target.value })}
+                      id="assignedTo"
+                      value={newTask.assignedTo}
+                      onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
+                      placeholder="e.g., John Doe"
                     />
                   </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="assignedTo">Assigned To</Label>
-                  <Input
-                    id="assignedTo"
-                    value={newTask.assignedTo}
-                    onChange={(e) => setNewTask({ ...newTask, assignedTo: e.target.value })}
-                    placeholder="e.g., John Doe"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="notes">Notes</Label>
-                  <Textarea
-                    id="notes"
-                    value={newTask.notes}
-                    onChange={(e) => setNewTask({ ...newTask, notes: e.target.value })}
-                    placeholder="Add any additional notes..."
-                    rows={3}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="tags">Tags (comma-separated)</Label>
-                  <Input
-                    id="tags"
-                    value={newTask.tags}
-                    onChange={(e) => setNewTask({ ...newTask, tags: e.target.value })}
-                    placeholder="e.g., Work, Design, Urgent"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="priority">Priority *</Label>
-                  <select
-                    id="priority"
-                    value={newTask.priority}
-                    onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as any })}
-                    className="w-full p-2 border rounded-md"
-                  >
-                    <option value="Low">Low</option>
-                    <option value="Mid">Mid</option>
-                    <option value="High">High</option>
-                  </select>
-                </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-medium text-gray-700" htmlFor="notes">Notes</Label>
+                    <Textarea
+                      id="notes"
+                      value={newTask.notes}
+                      onChange={(e) => setNewTask({ ...newTask, notes: e.target.value })}
+                      placeholder="Add any additional notes..."
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-medium text-gray-700" htmlFor="tags">Tags (comma-separated)</Label>
+                    <Input
+                      id="tags"
+                      value={newTask.tags}
+                      onChange={(e) => setNewTask({ ...newTask, tags: e.target.value })}
+                      placeholder="e.g., Work, Design, Urgent"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-medium text-gray-700" htmlFor="priority">Priority *</Label>
+                    <select
+                      id="priority"
+                      value={newTask.priority}
+                      onChange={(e) => setNewTask({ ...newTask, priority: e.target.value as any })}
+                      className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
+                    >
+                      <option value="Low">Low</option>
+                      <option value="Mid">Mid</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
                 <Button type="button" onClick={handleSubmit} className="w-full">
                   Create Task
                 </Button>
@@ -635,41 +616,49 @@ export default function DailyTasks({
 
   {/* Edit Task Dialog */ }
   <Dialog open={!!editingTask} onOpenChange={(open) => !open && setEditingTask(null)}>
-    <DialogContent className="max-w-lg">
+    <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
       <DialogHeader>
         <DialogTitle>Edit Task</DialogTitle>
       </DialogHeader>
       {editingTask && (
-        <div className="space-y-4 mt-4">
-          <div>
-            <Label>Task Title</Label>
+        <div className="space-y-6 mt-4">
+          <div className="flex flex-col gap-2">
+            <Label className="font-medium text-gray-700">Task Title</Label>
             <Input
               value={editingTask.title}
               onChange={(e) => setEditingTask({ ...editingTask, title: e.target.value } as DailyTask)}
             />
           </div>
-          <div>
-            <Label>Due Date</Label>
+          <div className="flex flex-col gap-2">
+            <Label className="font-medium text-gray-700">Due Date</Label>
             <Input
               type="date"
               value={editingTask.dueDate}
               onChange={(e) => setEditingTask({ ...editingTask, dueDate: e.target.value } as DailyTask)}
             />
           </div>
-          <div>
-            <Label>Priority</Label>
+          <div className="flex flex-col gap-2">
+            <Label className="font-medium text-gray-700">Priority</Label>
             <select
               value={editingTask.priority}
               onChange={(e) => setEditingTask({ ...editingTask, priority: e.target.value as any } as DailyTask)}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="Low">Low</option>
               <option value="Mid">Mid</option>
               <option value="High">High</option>
             </select>
           </div>
-          <div>
-            <Label>Tags (comma-separated)</Label>
+          <div className="flex flex-col gap-2">
+            <Label className="font-medium text-gray-700">Assigned To</Label>
+            <Input
+              value={editingTask.assignedTo || ''}
+              onChange={(e) => setEditingTask({ ...editingTask, assignedTo: e.target.value } as DailyTask)}
+              placeholder="E.g. JD"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label className="font-medium text-gray-700">Tags (comma-separated)</Label>
             <Input
               value={editingTask.tags.join(', ')}
               onChange={(e) => setEditingTask({
@@ -678,12 +667,12 @@ export default function DailyTasks({
               } as DailyTask)}
             />
           </div>
-          <div>
-            <Label>Weekly Goal</Label>
+          <div className="flex flex-col gap-2">
+            <Label className="font-medium text-gray-700">Weekly Goal</Label>
             <select
               value={editingTask.weeklyGoalId}
               onChange={(e) => setEditingTask({ ...editingTask, weeklyGoalId: e.target.value, targetId: '' } as DailyTask)}
-              className="w-full p-2 border rounded-md"
+              className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
             >
               <option value="">Choose a weekly goal...</option>
               {weeklyGoals.map(goal => (
@@ -692,12 +681,12 @@ export default function DailyTasks({
             </select>
           </div>
           {editingTask.weeklyGoalId && (
-            <div>
-              <Label>Target</Label>
+            <div className="flex flex-col gap-2">
+              <Label className="font-medium text-gray-700">Target</Label>
               <select
                 value={editingTask.targetId}
                 onChange={(e) => setEditingTask({ ...editingTask, targetId: e.target.value } as DailyTask)}
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary"
               >
                 <option value="">Choose a target...</option>
                 {weeklyGoals.find(g => g.id === editingTask.weeklyGoalId)?.targets.map(target => (
