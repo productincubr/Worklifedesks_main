@@ -55,9 +55,13 @@ interface DashboardProps {
   onProfileClick: () => void;
 }
 
-const getRandomTask = (): string => {
+const getDeterministicTask = (name: string): string => {
   const tasks = ['Tyoharz listing', 'NBL', 'Worklifedesks', 'Bandana sourcing', 'Project review', 'Client call'];
-  return tasks[Math.floor(Math.random() * tasks.length)];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return tasks[Math.abs(hash) % tasks.length];
 };
 
 const getRandomMode = (): EmployeeMode => {
@@ -221,7 +225,7 @@ export default function Dashboard({
 
   // Add status to employees
   const employeesWithStatus: EmployeeWithStatus[] = employees.map((emp, idx) => {
-    const task = getRandomTask();
+    const task = getDeterministicTask(emp.name);
     const data = getEmployeeData(emp.id, task);
     return {
       ...emp,
