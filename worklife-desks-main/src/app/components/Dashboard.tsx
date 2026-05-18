@@ -79,6 +79,54 @@ const getModeColor = (mode: EmployeeMode): string => {
   }
 };
 
+const getStatusColor = (status: string): { bg: string; border: string; badge: string; text: string } => {
+  switch (status) {
+    case 'Completed':
+      return {
+        bg: 'bg-emerald-50',
+        border: 'border-emerald-200',
+        badge: 'bg-emerald-100 text-emerald-800',
+        text: 'text-emerald-700'
+      };
+    case 'In Progress':
+      return {
+        bg: 'bg-blue-50',
+        border: 'border-blue-200',
+        badge: 'bg-blue-100 text-blue-800',
+        text: 'text-blue-700'
+      };
+    case 'Testing':
+      return {
+        bg: 'bg-purple-50',
+        border: 'border-purple-200',
+        badge: 'bg-purple-100 text-purple-800',
+        text: 'text-purple-700'
+      };
+    case 'Waiting for Feedback':
+      return {
+        bg: 'bg-amber-50',
+        border: 'border-amber-200',
+        badge: 'bg-amber-100 text-amber-800',
+        text: 'text-amber-700'
+      };
+    case 'Researching':
+      return {
+        bg: 'bg-cyan-50',
+        border: 'border-cyan-200',
+        badge: 'bg-cyan-100 text-cyan-800',
+        text: 'text-cyan-700'
+      };
+    case 'Not Started':
+    default:
+      return {
+        bg: 'bg-gray-50',
+        border: 'border-gray-200',
+        badge: 'bg-gray-100 text-gray-800',
+        text: 'text-gray-700'
+      };
+  }
+};
+
 
 
 export default function Dashboard({ 
@@ -547,10 +595,12 @@ export default function Dashboard({
                               
                               {/* Task List */}
                               <div className="flex-1 overflow-auto space-y-1.5 max-h-32 pr-1">
-                                {getEmployeeTasks(employee.id).map((task) => (
+                                {getEmployeeTasks(employee.id).map((task) => {
+                                  const statusColor = getStatusColor(task.status);
+                                  return (
                                   <div 
                                     key={task.id} 
-                                    className={`flex flex-col gap-1.5 py-2 px-3 rounded-md transition-colors ${task.status === 'In Progress' ? 'bg-[#f0fdf4] border border-[#dcfce7]' : 'bg-white border border-gray-100 shadow-sm'}`}
+                                    className={`flex flex-col gap-1.5 py-2 px-3 rounded-md transition-colors border ${statusColor.bg} ${statusColor.border} shadow-sm`}
                                   >
                                     <div className="flex items-start gap-2">
                                       <Checkbox
@@ -566,11 +616,11 @@ export default function Dashboard({
                                         />
                                       </div>
                                     </div>
-                                    <div className="">
+                                    <div className="flex items-center gap-2">
                                       <select
                                         value={task.status}
                                         onChange={(e) => updateTask(employee.id, task.id, { status: e.target.value as any })}
-                                        className="text-[10px] bg-transparent border border-gray-200 rounded px-1 py-0.5 text-gray-600 focus:outline-none focus:border-[#166534]"
+                                        className={`text-[10px] rounded px-2 py-1 font-medium focus:outline-none transition-colors ${statusColor.badge} border-0 focus:ring-1 focus:ring-offset-0 focus:ring-gray-400`}
                                       >
                                         <option value="Not Started">Not Started</option>
                                         <option value="Researching">Researching</option>
@@ -581,7 +631,8 @@ export default function Dashboard({
                                       </select>
                                     </div>
                                   </div>
-                                ))}
+                                );
+                                })}
                               </div>
                             </div>
                           ) : (

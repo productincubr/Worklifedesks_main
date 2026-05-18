@@ -605,11 +605,11 @@ ${dailyTasks.filter(t => t.status === 'To Do').map(task => `
 // Demo employees for when no employees are saved
 function generateDemoEmployees(): Employee[] {
   return [
+    { id: '5', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
     { id: '1', name: 'Aashvi Aanand', title: 'Team Member', phoneNumber: '', email: 'aashviaanand17@gmail.com' },
     { id: '2', name: 'Arpit Mishra', title: 'Team Member', phoneNumber: '', email: 'Arpitmishra272728@gmail.com' },
     { id: '3', name: 'Khushi', title: 'Team Member', phoneNumber: '', email: 'Kikokhushi582@gmail.com' },
     { id: '3', name: 'Saurabh', title: 'Software Developer', phoneNumber: '', email: 'sourabhsingh22112003@gmail.com' },
-    { id: '5', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
     { id: '6', name: 'Bhavika Bhalla', title: 'UI/UX Designer', phoneNumber: '555-0102', email: 'bhavika@example.com' },
     { id: '7', name: 'Bhawna Kela', title: 'Project Manager', phoneNumber: '555-0103', email: 'bhawna@example.com' },
     { id: '8', name: 'Rahul Singh', title: 'Data Analyst', phoneNumber: '555-0104', email: 'rahul@example.com' },
