@@ -605,10 +605,10 @@ ${dailyTasks.filter(t => t.status === 'To Do').map(task => `
 // Demo employees for when no employees are saved
 function generateDemoEmployees(): Employee[] {
   return [
-    { id: '5', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
-    { id: '1', name: 'Aashvi Aanand', title: 'Team Member', phoneNumber: '', email: 'aashviaanand17@gmail.com' },
-    { id: '2', name: 'Arpit Mishra', title: 'Team Member', phoneNumber: '', email: 'Arpitmishra272728@gmail.com' },
-    { id: '3', name: 'Khushi', title: 'Team Member', phoneNumber: '', email: 'Kikokhushi582@gmail.com' },
+    { id: '1', name: 'Gopal Batra', title: 'Senior Developer', phoneNumber: '555-0101', email: 'gopal@example.com' },
+    { id: '2', name: 'Aashvi Aanand', title: 'Team Member', phoneNumber: '', email: 'aashviaanand17@gmail.com' },
+    { id: '5', name: 'Arpit Mishra', title: 'Team Member', phoneNumber: '', email: 'Arpitmishra272728@gmail.com' },
+    { id: '4', name: 'Khushi', title: 'Team Member', phoneNumber: '', email: 'Kikokhushi582@gmail.com' },
     { id: '3', name: 'Saurabh', title: 'Software Developer', phoneNumber: '', email: 'sourabhsingh22112003@gmail.com' },
     { id: '6', name: 'Bhavika Bhalla', title: 'UI/UX Designer', phoneNumber: '555-0102', email: 'bhavika@example.com' },
     { id: '7', name: 'Bhawna Kela', title: 'Project Manager', phoneNumber: '555-0103', email: 'bhawna@example.com' },
@@ -621,5 +621,6 @@ function generateDemoEmployees(): Employee[] {
     { id: '14', name: 'Sanjay Verma', title: 'QA Engineer', phoneNumber: '555-0111', email: 'sanjay@example.com' },
     { id: '15', name: 'Meera Joshi', title: 'HR Manager', phoneNumber: '555-0112', email: 'meera@example.com' },
     { id: '16', name: 'Arjun Nair', title: 'DevOps Engineer', phoneNumber: '555-0113', email: 'arjun@example.com' },
+    { id: '17', name: 'avneet', title: 'Co-founder Papiah', phoneNumber: '+91 98316 84007', email: 'avneetbhullarofficial@gmail.com' },
   ];
 }
